@@ -14,13 +14,10 @@ const containerStyle = {
     alignItems: 'flex-start',
 };
 
-const headerStyle = { color: 'red' };
-
 export default class AddForm extends React.Component {
     state = {
         title: '',
         estimation: '',
-        errorMessage: '',
     }
 
     onTitleChange = ({ currentTarget: { value: title } }) => {
@@ -31,27 +28,26 @@ export default class AddForm extends React.Component {
         this.setState({ estimation });
     }
 
-    onAddClick = () => {
+    onFormSubmit = (e) => {
+        e.preventDefault();
+
         const { title, estimation } = this.state;
 
         if (this.state.title && this.state.estimation) {
             this.props.onSubmit({ title, estimation });
-
-            this.setState({ title: '', estimation: '', errorMessage: '' });
-        } else {
-            this.setState({ errorMessage: 'Please fill all fields with valid entries' });
+            this.setState({ title: '', estimation: '' });
         }
     }
 
     render() {
         return (
-            <div
+            <form
                 style={containerStyle}
+                onSubmit={this.onFormSubmit}
             >
-                <h3 style={headerStyle}>{this.state.errorMessage}</h3>
-
                 Title
                 <input
+                    required
                     value={this.state.title}
                     onChange={this.onTitleChange}
                     style={inputStyle}
@@ -59,6 +55,7 @@ export default class AddForm extends React.Component {
 
                 {'Estimation (in seconds)'}
                 <input
+                    required
                     value={this.state.estimation}
                     onChange={this.onEstimationChange}
                     style={inputStyle}
@@ -66,12 +63,10 @@ export default class AddForm extends React.Component {
                     min='0'
                 />
 
-                <button
-                    onClick={this.onAddClick}
-                >
+                <button type='submit'>
                     Add New
                 </button>
-            </div>
+            </form>
         );
     }
 }
